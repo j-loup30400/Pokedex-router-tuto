@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { AppBar,Toolbar, Grid, Card, CardContent, CircularProgress, CardMedia, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import mockData from "./mockData";
+import {toFirstCharUppercase} from "./Constants"
 
 
 const useStyles = makeStyles({
@@ -19,10 +20,8 @@ const useStyles = makeStyles({
     } 
 });
 
-const toFirstCharUppercase = name => 
-name.charAt(0).toUpperCase() + name.slice(1);
 
-const Pokedex = props => {
+const Pokedex = (props) => {
     const {history} = props;
     const classes = useStyles();
     const [pokemonData, setPokemonData] = useState(mockData);
@@ -33,7 +32,7 @@ const getPokemonCard = (pokemonId) => {
     const sprite = `https://raw.githubusercontent.com/pokeAPI/sprites/master/sprites/pokemon/${id}.png`;
     return(
     <Grid item xs={4} key={pokemonId}>
-        <Card onClick = {() => history.pushState(`/${pokemonId}`)}>
+        <Card onClick = {() => history.push(`/${pokemonId}`)}>
             <CardMedia
             className={classes.CardMedia}
             image={sprite}
