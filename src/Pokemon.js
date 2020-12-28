@@ -1,14 +1,28 @@
-import React, { useState} from "react";
-import mockData from "./mockData";
-import { Typography, Link } from "@material-ui/core";
-import {toFirstCharUppercase} from "./Constants"
+import React, { useState, useEffect} from "react";
+import { Typography, Link, CircularProgress, Button } from "@material-ui/core";
+import {toFirstCharUppercase} from "./Constants";
+import axios from "axios";
 
 
 const Pokemon = (props) => {
-    const { match } = props;
+    const { history, match } = props;
     const { params } = match;
     const { pokemonId } = params;
-    const [pokemon, setPokemon] = useState(mockData[`${pokemonId}`]);
+    const [pokemon, setPokemon] = useState(undefined);
+
+    useEffect(() => {
+      axios
+        .get(`https://pokeapi.co/api/v2/pokemon/${pokemonId}/`)
+        .then(function (response) {
+          const { data } = response;
+          setPokemon(data);
+        })
+        .catch(function (error) {
+          setPokemon(false);
+        });
+    }, [pokemonId]);
+
+
 
     const generatePokemonJSX = () => {
       const { name, id, species, height, weight, types, sprites } = pokemon;
@@ -38,7 +52,17 @@ const Pokemon = (props) => {
        </>
     );
       };
-    return <> {generatePokemonJSX()} </>;
+    return( <> 
+ {pokemon === undefined && <CircularProgress />}
+      {pokemon !== undefined && pokemon && generatePokemonJSX(pokemon)}
+      {pokemon === false && <Typography> Pokemon not found</Typography>}
+      {pokemon !== undefined && (
+        <Button variant="contained" onClick={() => history.push("/")}>
+          back to pokedex
+        </Button>
+      )}
+
+    </>);
     
       
 };
